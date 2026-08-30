@@ -1,106 +1,98 @@
 # CryptographyAPI
 
-[![licence mit](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/louresb/CryptographyAPI/blob/main/LICENSE)
+[![.NET Build](https://github.com/louresb/cryptography-api/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/louresb/cryptography-api/actions/workflows/dotnet-build.yml)
 ![Development Status Badge](https://img.shields.io/badge/Status-Completed-green)
 
-This API is developed as a solution for a [challenge](https://github.com/backend-br/desafios) offered by [Back-End Brasil](https://github.com/backend-br), the official community hub for Brazilian backenders.
+This API is a completed solution for a [public challenge](https://github.com/backend-br/desafios) offered by [Back-End Brasil](https://github.com/backend-br), the official community hub for Brazilian back-end developers.
 
-## Technologies Used
+The project demonstrates transparent encryption of sensitive entity properties between the application and database layers. Clients work with plaintext values while Entity Framework Core persists authenticated ciphertext.
 
-- C#
-- .NET
-- ASP.NET
+## Technologies
+
+- C# and .NET 10
+- ASP.NET Core Web API
 - Entity Framework Core
+- AES-256-GCM authenticated encryption
 - Microsoft SQL Server
+- MSTest and SQLite for automated verification
 
-# Challenge description
+## Challenge
 
-Your challenge will be to implement encryption in a service transparently for both the API and the service layers of your application. The goal is to ensure that sensitive fields of entity objects are not directly visible. This will involve performing encryption at runtime during the conversion of entities to the corresponding columns in the database, and vice versa.
+The challenge is to implement encryption in a service transparently for both the API and service layers. Sensitive entity fields must not be directly visible in database columns because encryption and decryption occur during persistence conversion.
 
-## Example
+The example entity contains the following fields:
 
-Consider the fields "userDocument" and "creditCardToken" as sensitive fields that need to be encrypted. The example table would look like this:
+| Field | Type | Storage |
+| --- | --- | --- |
+| `id` | `long` | Plaintext |
+| `userDocument` | `string` | Encrypted |
+| `creditCardToken` | `string` | Encrypted |
+| `value` | `long` | Plaintext |
 
-| id | userDocument     | creditCardToken | value |
-|:---|:-----------------|:----------------|:------|
-| 1  | MzYxNDA3ODE4MzM= | YWJjMTIz        | 5999  |
-| 2  | MzI5NDU0MTA1ODM= | eHl6NDU2        | 1000  |
-| 3  | NzYwNzc0NTIzODY= | Nzg5eHB0bw==    | 1500  |
+## Implementation
 
-The structure of the corresponding entity would be as follows:
+Entity Framework Core value converters apply encryption and decryption without exposing cryptographic operations to controllers or clients.
 
-| Field           | Type   |
-|:----------------|:-------|
-| id              | Long   |
-| userDocument    | String |
-| creditCardToken | String |
-| value           | Long   |
-
-## Requirements
-
-- Implement a simple CRUD considering the aforementioned fields as sensitive.
-- Use the encryption algorithm of your preference.
+- AES-256-GCM provides confidentiality and integrity validation.
+- Each encrypted value receives a cryptographically random nonce.
+- The encryption key and database connection string remain outside source control.
+- Versioned ciphertext allows the persisted format to evolve explicitly.
 
 ## Screenshots
 
 <div align="center">
 
 ### Post new user
+
 ![Post](https://github.com/louresb/CryptographyAPI/assets/103293696/3706150b-543a-4f6b-a391-8568c35e2672) ![Post 200](https://github.com/louresb/CryptographyAPI/assets/103293696/cc769d26-0c25-4492-a34b-56bbe15ec291)
 
-### "userDocument" and "creditCardToken" encrypted at the database
-![Db encrypted](https://github.com/louresb/CryptographyAPI/assets/103293696/15ad45a8-d973-4d09-bffb-ee509837dc69) 
+### Sensitive fields encrypted in the database
 
-### Get decrypted data from database
+![Db encrypted](https://github.com/louresb/CryptographyAPI/assets/103293696/15ad45a8-d973-4d09-bffb-ee509837dc69)
+
+### Data decrypted transparently by the API
+
 ![Get](https://github.com/louresb/CryptographyAPI/assets/103293696/803e27b3-a0b2-4f13-94aa-5d3e493ee74a)
 
 </div>
 
-## Installation
+## Run locally
 
-1. Clone the repository: 
+Requirements:
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- Microsoft SQL Server
+
+Clone the repository and configure the local secrets from the project directory:
 
 ```powershell
+$encryptionKey = [Convert]::ToBase64String(
+    [Security.Cryptography.RandomNumberGenerator]::GetBytes(32)
+)
 
-git clone https://github.com/louresb/CryptographyAPI
-
+dotnet user-secrets set "Encryption:Key" $encryptionKey
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<SQL Server connection string>"
 ```
 
-2. Navigate to the project directory:
+Create the database and start the API:
 
 ```powershell
-
-cd CryptographyAPI
-
-```
-
-3. Build the project:
-
-```powershell
-
-dotnet build
-
-```
-
-4. Make sure to have SQL Server 
-
-```powershell
-
 dotnet ef database update
-
+dotnet run
 ```
 
-5. Run the project:
+Open the Swagger UI using the URL shown in the terminal.
+
+Environment variables can also be used with the names `Encryption__Key` and `ConnectionStrings__DefaultConnection`.
+
+## Tests
+
+The test suite verifies encryption round trips, unique ciphertext, tamper detection and transparent database conversion.
 
 ```powershell
-
-dotnet run
-
+dotnet test --configuration Release
 ```
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
 ## License
-[MIT License](https://github.com/louresb/CryptographyAPI/blob/main/LICENSE) © [Bruno Loures](https://github.com/louresb)
+
+[MIT License](LICENSE) © [Bruno Loures](https://github.com/louresb)
