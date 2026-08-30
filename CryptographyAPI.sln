@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptographyAPI", "CryptographyAPI.csproj", "{04CA2217-4C08-4705-A3FB-5A47F9DC8A32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptographyAPI.Tests", "tests\CryptographyAPI.Tests\CryptographyAPI.Tests.csproj", "{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{04CA2217-4C08-4705-A3FB-5A47F9DC8A32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04CA2217-4C08-4705-A3FB-5A47F9DC8A32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04CA2217-4C08-4705-A3FB-5A47F9DC8A32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4B8B30F7-88FE-435C-BD1D-D9E5707C00A0} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0AD52EF1-0670-48DD-A447-EA9EF17A3FED}
